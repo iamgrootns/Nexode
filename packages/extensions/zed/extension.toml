@@ -1,0 +1,36 @@
+id = "nexode"
+name = "Nexode"
+description = "The open source coding agent."
+version = "1.2.15"
+schema_version = 1
+authors = ["Anomaly"]
+repository = "https://github.com/iamgrootns/Nexode"
+
+[agent_servers.nexode]
+name = "Nexode"
+icon = "./icons/nexode.svg"
+
+[agent_servers.nexode.targets.darwin-aarch64]
+archive = "https://github.com/iamgrootns/Nexode/releases/download/v1.2.15/nexode-darwin-arm64.zip"
+cmd = "./nexode"
+args = ["acp"]
+
+[agent_servers.nexode.targets.darwin-x86_64]
+archive = "https://github.com/iamgrootns/Nexode/releases/download/v1.2.15/nexode-darwin-x64.zip"
+cmd = "./nexode"
+args = ["acp"]
+
+[agent_servers.nexode.targets.linux-aarch64]
+archive = "https://github.com/iamgrootns/Nexode/releases/download/v1.2.15/nexode-linux-arm64.tar.gz"
+cmd = "./nexode"
+args = ["acp"]
+
+[agent_servers.nexode.targets.linux-x86_64]
+archive = "https://github.com/iamgrootns/Nexode/releases/download/v1.2.15/nexode-linux-x64.tar.gz"
+cmd = "./nexode"
+args = ["acp"]
+
+[agent_servers.nexode.targets.windows-x86_64]
+archive = "https://github.com/iamgrootns/Nexode/releases/download/v1.2.15/nexode-windows-x64.zip"
+cmd = "./nexode.exe"
+args = ["acp"]

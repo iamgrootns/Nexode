@@ -1,0 +1,13 @@
+{
+  "$schema": "https://nexode.ai/config.json",
+  "provider": {
+    "nexode": {
+      "options": {},
+    },
+  },
+  "mcp": {},
+  "tools": {
+    "github-triage": false,
+    "github-pr-search": false,
+  },
+}

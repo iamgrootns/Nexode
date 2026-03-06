@@ -1,0 +1,604 @@
+---
+title: CLI
+description: Nexode CLI options and commands.
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components"
+
+The Nexode CLI by default starts the [TUI](/docs/tui) when run without any arguments.
+
+```bash
+nexode
+```
+
+But it also accepts commands as documented on this page. This allows you to interact with Nexode programmatically.
+
+```bash
+nexode run "Explain how closures work in JavaScript"
+```
+
+---
+
+### tui
+
+Start the Nexode terminal user interface.
+
+```bash
+nexode [project]
+```
+
+#### Flags
+
+| Flag         | Short | Description                                                             |
+| ------------ | ----- | ----------------------------------------------------------------------- |
+| `--continue` | `-c`  | Continue the last session                                               |
+| `--session`  | `-s`  | Session ID to continue                                                  |
+| `--fork`     |       | Fork the session when continuing (use with `--continue` or `--session`) |
+| `--prompt`   |       | Prompt to use                                                           |
+| `--model`    | `-m`  | Model to use in the form of provider/model                              |
+| `--agent`    |       | Agent to use                                                            |
+| `--port`     |       | Port to listen on                                                       |
+| `--hostname` |       | Hostname to listen on                                                   |
+
+---
+
+## Commands
+
+The Nexode CLI also has the following commands.
+
+---
+
+### agent
+
+Manage agents for Nexode.
+
+```bash
+nexode agent [command]
+```
+
+---
+
+### attach
+
+Attach a terminal to an already running Nexode backend server started via `serve` or `web` commands.
+
+```bash
+nexode attach [url]
+```
+
+This allows using the TUI with a remote Nexode backend. For example:
+
+```bash
+# Start the backend server for web/mobile access
+nexode web --port 4096 --hostname 0.0.0.0
+
+# In another terminal, attach the TUI to the running backend
+nexode attach http://10.20.30.40:4096
+```
+
+#### Flags
+
+| Flag        | Short | Description                       |
+| ----------- | ----- | --------------------------------- |
+| `--dir`     |       | Working directory to start TUI in |
+| `--session` | `-s`  | Session ID to continue            |
+
+---
+
+#### create
+
+Create a new agent with custom configuration.
+
+```bash
+nexode agent create
+```
+
+This command will guide you through creating a new agent with a custom system prompt and tool configuration.
+
+---
+
+#### list
+
+List all available agents.
+
+```bash
+nexode agent list
+```
+
+---
+
+### auth
+
+Command to manage credentials and login for providers.
+
+```bash
+nexode auth [command]
+```
+
+---
+
+#### login
+
+Nexode is powered by the provider list at [Models.dev](https://models.dev), so you can use `nexode auth login` to configure API keys for any provider you'd like to use. This is stored in `~/.local/share/nexode/auth.json`.
+
+```bash
+nexode auth login
+```
+
+When Nexode starts up it loads the providers from the credentials file. And if there are any keys defined in your environments or a `.env` file in your project.
+
+---
+
+#### list
+
+Lists all the authenticated providers as stored in the credentials file.
+
+```bash
+nexode auth list
+```
+
+Or the short version.
+
+```bash
+nexode auth ls
+```
+
+---
+
+#### logout
+
+Logs you out of a provider by clearing it from the credentials file.
+
+```bash
+nexode auth logout
+```
+
+---
+
+### github
+
+Manage the GitHub agent for repository automation.
+
+```bash
+nexode github [command]
+```
+
+---
+
+#### install
+
+Install the GitHub agent in your repository.
+
+```bash
+nexode github install
+```
+
+This sets up the necessary GitHub Actions workflow and guides you through the configuration process. [Learn more](/docs/github).
+
+---
+
+#### run
+
+Run the GitHub agent. This is typically used in GitHub Actions.
+
+```bash
+nexode github run
+```
+
+##### Flags
+
+| Flag      | Description                            |
+| --------- | -------------------------------------- |
+| `--event` | GitHub mock event to run the agent for |
+| `--token` | GitHub personal access token           |
+
+---
+
+### mcp
+
+Manage Model Context Protocol servers.
+
+```bash
+nexode mcp [command]
+```
+
+---
+
+#### add
+
+Add an MCP server to your configuration.
+
+```bash
+nexode mcp add
+```
+
+This command will guide you through adding either a local or remote MCP server.
+
+---
+
+#### list
+
+List all configured MCP servers and their connection status.
+
+```bash
+nexode mcp list
+```
+
+Or use the short version.
+
+```bash
+nexode mcp ls
+```
+
+---
+
+#### auth
+
+Authenticate with an OAuth-enabled MCP server.
+
+```bash
+nexode mcp auth [name]
+```
+
+If you don't provide a server name, you'll be prompted to select from available OAuth-capable servers.
+
+You can also list OAuth-capable servers and their authentication status.
+
+```bash
+nexode mcp auth list
+```
+
+Or use the short version.
+
+```bash
+nexode mcp auth ls
+```
+
+---
+
+#### logout
+
+Remove OAuth credentials for an MCP server.
+
+```bash
+nexode mcp logout [name]
+```
+
+---
+
+#### debug
+
+Debug OAuth connection issues for an MCP server.
+
+```bash
+nexode mcp debug <name>
+```
+
+---
+
+### models
+
+List all available models from configured providers.
+
+```bash
+nexode models [provider]
+```
+
+This command displays all models available across your configured providers in the format `provider/model`.
+
+This is useful for figuring out the exact model name to use in [your config](/docs/config/).
+
+You can optionally pass a provider ID to filter models by that provider.
+
+```bash
+nexode models anthropic
+```
+
+#### Flags
+
+| Flag        | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| `--refresh` | Refresh the models cache from models.dev                     |
+| `--verbose` | Use more verbose model output (includes metadata like costs) |
+
+Use the `--refresh` flag to update the cached model list. This is useful when new models have been added to a provider and you want to see them in Nexode.
+
+```bash
+nexode models --refresh
+```
+
+---
+
+### run
+
+Run nexode in non-interactive mode by passing a prompt directly.
+
+```bash
+nexode run [message..]
+```
+
+This is useful for scripting, automation, or when you want a quick answer without launching the full TUI. For example.
+
+```bash "nexode run"
+nexode run Explain the use of context in Go
+```
+
+You can also attach to a running `nexode serve` instance to avoid MCP server cold boot times on every run:
+
+```bash
+# Start a headless server in one terminal
+nexode serve
+
+# In another terminal, run commands that attach to it
+nexode run --attach http://localhost:4096 "Explain async/await in JavaScript"
+```
+
+#### Flags
+
+| Flag         | Short | Description                                                             |
+| ------------ | ----- | ----------------------------------------------------------------------- |
+| `--command`  |       | The command to run, use message for args                                |
+| `--continue` | `-c`  | Continue the last session                                               |
+| `--session`  | `-s`  | Session ID to continue                                                  |
+| `--fork`     |       | Fork the session when continuing (use with `--continue` or `--session`) |
+| `--share`    |       | Share the session                                                       |
+| `--model`    | `-m`  | Model to use in the form of provider/model                              |
+| `--agent`    |       | Agent to use                                                            |
+| `--file`     | `-f`  | File(s) to attach to message                                            |
+| `--format`   |       | Format: default (formatted) or json (raw JSON events)                   |
+| `--title`    |       | Title for the session (uses truncated prompt if no value provided)      |
+| `--attach`   |       | Attach to a running nexode server (e.g., http://localhost:4096)       |
+| `--port`     |       | Port for the local server (defaults to random port)                     |
+
+---
+
+### serve
+
+Start a headless Nexode server for API access. Check out the [server docs](/docs/server) for the full HTTP interface.
+
+```bash
+nexode serve
+```
+
+This starts an HTTP server that provides API access to nexode functionality without the TUI interface. Set `NEXODE_SERVER_PASSWORD` to enable HTTP basic auth (username defaults to `nexode`).
+
+#### Flags
+
+| Flag         | Description                                |
+| ------------ | ------------------------------------------ |
+| `--port`     | Port to listen on                          |
+| `--hostname` | Hostname to listen on                      |
+| `--mdns`     | Enable mDNS discovery                      |
+| `--cors`     | Additional browser origin(s) to allow CORS |
+
+---
+
+### session
+
+Manage Nexode sessions.
+
+```bash
+nexode session [command]
+```
+
+---
+
+#### list
+
+List all Nexode sessions.
+
+```bash
+nexode session list
+```
+
+##### Flags
+
+| Flag          | Short | Description                          |
+| ------------- | ----- | ------------------------------------ |
+| `--max-count` | `-n`  | Limit to N most recent sessions      |
+| `--format`    |       | Output format: table or json (table) |
+
+---
+
+### stats
+
+Show token usage and cost statistics for your Nexode sessions.
+
+```bash
+nexode stats
+```
+
+#### Flags
+
+| Flag        | Description                                                                 |
+| ----------- | --------------------------------------------------------------------------- |
+| `--days`    | Show stats for the last N days (all time)                                   |
+| `--tools`   | Number of tools to show (all)                                               |
+| `--models`  | Show model usage breakdown (hidden by default). Pass a number to show top N |
+| `--project` | Filter by project (all projects, empty string: current project)             |
+
+---
+
+### export
+
+Export session data as JSON.
+
+```bash
+nexode export [sessionID]
+```
+
+If you don't provide a session ID, you'll be prompted to select from available sessions.
+
+---
+
+### import
+
+Import session data from a JSON file or Nexode share URL.
+
+```bash
+nexode import <file>
+```
+
+You can import from a local file or an Nexode share URL.
+
+```bash
+nexode import session.json
+nexode import https://opncd.ai/s/abc123
+```
+
+---
+
+### web
+
+Start a headless Nexode server with a web interface.
+
+```bash
+nexode web
+```
+
+This starts an HTTP server and opens a web browser to access Nexode through a web interface. Set `NEXODE_SERVER_PASSWORD` to enable HTTP basic auth (username defaults to `nexode`).
+
+#### Flags
+
+| Flag         | Description                                |
+| ------------ | ------------------------------------------ |
+| `--port`     | Port to listen on                          |
+| `--hostname` | Hostname to listen on                      |
+| `--mdns`     | Enable mDNS discovery                      |
+| `--cors`     | Additional browser origin(s) to allow CORS |
+
+---
+
+### acp
+
+Start an ACP (Agent Client Protocol) server.
+
+```bash
+nexode acp
+```
+
+This command starts an ACP server that communicates via stdin/stdout using nd-JSON.
+
+#### Flags
+
+| Flag         | Description           |
+| ------------ | --------------------- |
+| `--cwd`      | Working directory     |
+| `--port`     | Port to listen on     |
+| `--hostname` | Hostname to listen on |
+
+---
+
+### uninstall
+
+Uninstall Nexode and remove all related files.
+
+```bash
+nexode uninstall
+```
+
+#### Flags
+
+| Flag            | Short | Description                                 |
+| --------------- | ----- | ------------------------------------------- |
+| `--keep-config` | `-c`  | Keep configuration files                    |
+| `--keep-data`   | `-d`  | Keep session data and snapshots             |
+| `--dry-run`     |       | Show what would be removed without removing |
+| `--force`       | `-f`  | Skip confirmation prompts                   |
+
+---
+
+### upgrade
+
+Updates nexode to the latest version or a specific version.
+
+```bash
+nexode upgrade [target]
+```
+
+To upgrade to the latest version.
+
+```bash
+nexode upgrade
+```
+
+To upgrade to a specific version.
+
+```bash
+nexode upgrade v0.1.48
+```
+
+#### Flags
+
+| Flag       | Short | Description                                                       |
+| ---------- | ----- | ----------------------------------------------------------------- |
+| `--method` | `-m`  | The installation method that was used; curl, npm, pnpm, bun, brew |
+
+---
+
+## Global Flags
+
+The nexode CLI takes the following global flags.
+
+| Flag           | Short | Description                          |
+| -------------- | ----- | ------------------------------------ |
+| `--help`       | `-h`  | Display help                         |
+| `--version`    | `-v`  | Print version number                 |
+| `--print-logs` |       | Print logs to stderr                 |
+| `--log-level`  |       | Log level (DEBUG, INFO, WARN, ERROR) |
+
+---
+
+## Environment variables
+
+Nexode can be configured using environment variables.
+
+| Variable                              | Type    | Description                                       |
+| ------------------------------------- | ------- | ------------------------------------------------- |
+| `NEXODE_AUTO_SHARE`                 | boolean | Automatically share sessions                      |
+| `NEXODE_GIT_BASH_PATH`              | string  | Path to Git Bash executable on Windows            |
+| `NEXODE_CONFIG`                     | string  | Path to config file                               |
+| `NEXODE_TUI_CONFIG`                 | string  | Path to TUI config file                           |
+| `NEXODE_CONFIG_DIR`                 | string  | Path to config directory                          |
+| `NEXODE_CONFIG_CONTENT`             | string  | Inline json config content                        |
+| `NEXODE_DISABLE_AUTOUPDATE`         | boolean | Disable automatic update checks                   |
+| `NEXODE_DISABLE_PRUNE`              | boolean | Disable pruning of old data                       |
+| `NEXODE_DISABLE_TERMINAL_TITLE`     | boolean | Disable automatic terminal title updates          |
+| `NEXODE_PERMISSION`                 | string  | Inlined json permissions config                   |
+| `NEXODE_DISABLE_DEFAULT_PLUGINS`    | boolean | Disable default plugins                           |
+| `NEXODE_DISABLE_LSP_DOWNLOAD`       | boolean | Disable automatic LSP server downloads            |
+| `NEXODE_ENABLE_EXPERIMENTAL_MODELS` | boolean | Enable experimental models                        |
+| `NEXODE_DISABLE_AUTOCOMPACT`        | boolean | Disable automatic context compaction              |
+| `NEXODE_DISABLE_CLAUDE_CODE`        | boolean | Disable reading from `.claude` (prompt + skills)  |
+| `NEXODE_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Disable reading `~/.claude/CLAUDE.md`             |
+| `NEXODE_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Disable loading `.claude/skills`                  |
+| `NEXODE_DISABLE_MODELS_FETCH`       | boolean | Disable fetching models from remote sources       |
+| `NEXODE_FAKE_VCS`                   | string  | Fake VCS provider for testing purposes            |
+| `NEXODE_DISABLE_FILETIME_CHECK`     | boolean | Disable file time checking for optimization       |
+| `NEXODE_CLIENT`                     | string  | Client identifier (defaults to `cli`)             |
+| `NEXODE_ENABLE_EXA`                 | boolean | Enable Exa web search tools                       |
+| `NEXODE_SERVER_PASSWORD`            | string  | Enable basic auth for `serve`/`web`               |
+| `NEXODE_SERVER_USERNAME`            | string  | Override basic auth username (default `nexode`) |
+| `NEXODE_MODELS_URL`                 | string  | Custom URL for fetching models configuration      |
+
+---
+
+### Experimental
+
+These environment variables enable experimental features that may change or be removed.
+
+| Variable                                        | Type    | Description                             |
+| ----------------------------------------------- | ------- | --------------------------------------- |
+| `NEXODE_EXPERIMENTAL`                         | boolean | Enable all experimental features        |
+| `NEXODE_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Enable icon discovery                   |
+| `NEXODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Disable copy on select in TUI           |
+| `NEXODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | Default timeout for bash commands in ms |
+| `NEXODE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | Max output tokens for LLM responses     |
+| `NEXODE_EXPERIMENTAL_FILEWATCHER`             | boolean | Enable file watcher for entire dir      |
+| `NEXODE_EXPERIMENTAL_OXFMT`                   | boolean | Enable oxfmt formatter                  |
+| `NEXODE_EXPERIMENTAL_LSP_TOOL`                | boolean | Enable experimental LSP tool            |
+| `NEXODE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Disable file watcher                    |
+| `NEXODE_EXPERIMENTAL_EXA`                     | boolean | Enable experimental Exa features        |
+| `NEXODE_EXPERIMENTAL_LSP_TY`                  | boolean | Enable experimental LSP type checking   |
+| `NEXODE_EXPERIMENTAL_MARKDOWN`                | boolean | Enable experimental markdown features   |
+| `NEXODE_EXPERIMENTAL_PLAN_MODE`               | boolean | Enable plan mode                        |
