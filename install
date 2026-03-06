@@ -20,8 +20,8 @@ Options:
         --no-modify-path    Don't modify shell config files (.zshrc, .bashrc, etc.)
 
 Examples:
-    curl -fsSL https://github.com/iamgrootns/Nexodeinstall | bash
-    curl -fsSL https://github.com/iamgrootns/Nexodeinstall | bash -s -- --version 1.0.180
+    curl -fsSL https://raw.githubusercontent.com/iamgrootns/Nexode/main/install | bash
+    curl -fsSL https://raw.githubusercontent.com/iamgrootns/Nexode/main/install | bash -s -- --version 1.0.180
     ./install --binary /path/to/nexode
 EOF
 }
