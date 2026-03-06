@@ -306,13 +306,14 @@ export const AuthLoginCommand = cmd({
         })
 
         const priority: Record<string, number> = {
-          nexode: 0,
-          anthropic: 1,
-          "github-copilot": 2,
+          groq: 0,
+          google: 1,
+          openrouter: 2,
           openai: 3,
-          google: 4,
-          openrouter: 5,
-          vercel: 6,
+          anthropic: 4,
+          nexode: 5,
+          "github-copilot": 6,
+          vercel: 7,
         }
         const pluginProviders = resolvePluginProviders({
           hooks: await Plugin.list(),
@@ -336,9 +337,12 @@ export const AuthLoginCommand = cmd({
                 label: x.name,
                 value: x.id,
                 hint: {
-                  nexode: "recommended",
-                  anthropic: "Claude Max or API key",
-                  openai: "ChatGPT Plus/Pro or API key",
+                  groq: "Fast open-source models (Free Tier)",
+                  google: "Gemini models (Free Tier)",
+                  openrouter: "Hundreds of open-weight models (Free options)",
+                  openai: "Bring Your Own API Key",
+                  anthropic: "Bring Your Own API Key",
+                  nexode: "Pro Cloud subscriptions (coming soon)",
                 }[x.id],
               })),
             ),
